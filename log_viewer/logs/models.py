@@ -1,6 +1,6 @@
 from django.db import models
 
-class Log(models.Model):
+class LogData(models.Model):
     level = models.CharField(max_length=255)
     message = models.TextField()
     resourceId = models.CharField(max_length=255)
