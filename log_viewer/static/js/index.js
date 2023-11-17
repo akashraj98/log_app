@@ -26,14 +26,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     const logEntry = document.createElement('div');
                     logEntry.classList.add('log-entry');
                     logEntry.innerHTML = `
-                        <span>Level:</span> ${log.level}<br>
-                        <span>Message:</span> ${log.message}<br>
-                        <span>Resource ID:</span> ${log.resourceId}<br>
-                        <span>Timestamp:</span> ${log.timestamp}<br>
-                        <span>Trace ID:</span> ${log.traceId}<br>
-                        <span>Span ID:</span> ${log.spanId}<br>
-                        <span>Commit:</span> ${log.commit}<br>
-                        <span>Parent Resource ID:</span> ${log.parentResourceId || 'N/A'}<br>
+                        <strong>Level:</strong> ${log.level}
+                        <strong>Message:</strong> ${log.message}
+                        <strong>Resource ID:</strong> ${log.resourceId}
+                        <strong>Timestamp:</strong> ${log.timestamp}
+                        <strong>Trace ID:</strong> ${log.traceId}
+                        <strong>Span ID:</strong> ${log.spanId}
+                        <strong>Commit:</strong> ${log.commit}
+                        <strong>Parent Resource ID:</strong> ${log.parentResourceId || 'N/A'}
                     `;
                     logsContainer.appendChild(logEntry);
                 });

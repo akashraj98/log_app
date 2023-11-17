@@ -5,14 +5,14 @@ body {
 }
 
 .logs-container {
-    border: 1px solid #ddd;
+    border: 10px solid #ddd;
     padding: 15px;
     border-radius: 5px;
     margin-top: 20px;
 }
 
 .log-entry {
-    margin-bottom: 15px;
+    margin-bottom: 25px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
