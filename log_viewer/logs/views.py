@@ -5,7 +5,7 @@ from django.views import View
 
 from django.http import JsonResponse
 from django.db.models import Q
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.paginator import Paginator, EmptyPage
 import logging
 from logs.models import LogData
 # Create your views here.
@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 class LogsView(View):
     def get(self, request):
-        logs = LogData.objects.filter(order_by='timestamp')
-        return render(request, 'logs.html', {'logs': logs})
+        logs = LogData.objects.all().order_by('-timestamp')
+        return render(request, 'index.html', {'logs': logs})
     
 class LogSearchApiView(View):
     def get(self, request):

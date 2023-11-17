@@ -1,0 +1,20 @@
+/* style.css */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.logs-container {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.log-entry {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
