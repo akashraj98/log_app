@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
+from datetime import datetime
 
-# from rest_framework.views import APIView
 
 from django.http import JsonResponse
 from django.db.models import Q
@@ -19,7 +19,7 @@ class LogsView(View):
 class LogSearchApiView(View):
     def get(self, request):
         # Get query parameters
-        search_query = request.GET.get('search', '')
+        search_query = request.GET.get('q', '')
         level_filter = request.GET.get('level', '')
         message_filter = request.GET.get('message', '')
         resourceId_filter = request.GET.get('resourceId', '')
@@ -29,6 +29,13 @@ class LogSearchApiView(View):
         commit_filter = request.GET.get('commit', '')
         parentResourceId_filter = request.GET.get('parentResourceId', '')
         ordering = request.GET.get('ordering', '-timestamp')  # Default ordering by timestamp
+        start_timestamp_filter = request.GET.get('start_timestamp', '')
+        end_timestamp_filter = request.GET.get('end_timestamp', '')
+        # Convert timestamp strings to datetime objects if provided
+        start_datetime = datetime.strptime(start_timestamp_filter, '%Y-%m-%d %I:%M%p') if start_timestamp_filter else None
+        end_datetime = datetime.strptime(end_timestamp_filter, '%Y-%m-%d %I:%M%p') if end_timestamp_filter else None
+        print(start_datetime)
+        print(end_datetime)
 
         # Build filter conditions
         filter_conditions = Q()
@@ -54,13 +61,17 @@ class LogSearchApiView(View):
             filter_conditions &= Q(commit__icontains=commit_filter)
         if parentResourceId_filter:
             filter_conditions &= Q(parentResourceId__icontains=parentResourceId_filter)
+        if start_datetime:
+            filter_conditions &= Q(timestamp__gte=start_datetime)
+        if end_datetime:
+            filter_conditions &= Q(timestamp__lte=end_datetime)
 
         # Fetch logs based on filters
         logs = LogData.objects.filter(filter_conditions).order_by(ordering)
 
         # Paginate results
-        page = request.GET.get('page', 1)
-        paginator = Paginator(logs, 10)  # Show 10 logs per page
+        page = request.GET.get('page', 1) or 1
+        paginator = Paginator(logs, 15)  # Show 15 logs per page
         try:
             current_page = paginator.page(page)
         except EmptyPage:
