@@ -6,46 +6,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/js/index.css">
+    <link rel="stylesheet" href="/static/styles/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.css">
     <title>Log Viewer</title>
 </head>
 <body>
 
+<!-- index.html -->
+
 <div class="container mt-4">
-    <h2>Log Viewer</h2>
+    <h2 class="mb-4">Log Viewer</h2>
     
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-10">
             <div class="form-group">
                 <label for="searchInput">Search:</label>
-                <input type="text" class="form-control" id="searchInput" placeholder="Enter search query...">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <select class="form-control" id="searchField">
+                            <option value="">All Fields</option>
+                            <option value="spanId">Span ID</option>
+                            <option value="commit">Commit</option>
+                            <option value="traceId">Trace ID</option>
+                            <option value="resourceId">Resource ID</option>
+                            <option value="parentResourceId">P. Resource ID</option>
+                        </select>
+                    </div>
+                    <input type="text" class="form-control" id="searchInput" placeholder="Enter search query...">
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="levelFilter">Level:</label>
                 <select class="form-control" id="levelFilter">
                     <option value="">--All--</option>
                     <option value="ERROR">ERROR</option>
-                    <option value="WARNING">WARNING</option>
+                    <option value="WARN">WARNING</option>
                     <option value="INFO">INFO</option>
+                    <option value="DEBUG">DEBUG</option>
                     <!-- Add more options based on your log levels -->
                 </select>
             </div>
         </div>
         <div class="col-md-4">
-            <button class="btn btn-primary mt-4" id="applyFiltersBtn">Apply Filters</button>
+            <div class="form-group">
+                <label for="dateRange">Date Range:</label>
+                <div class="input-group">
+                    <input type="text" autocomplete="off" id="startDate" class="form-control" placeholder="Start Date" required>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">to</span>
+                    </div>
+                    <input type="text" autocomplete="off" id="endDate" class="form-control" placeholder="End Date" required>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 d-flex align-items-center justify-content-center">
+            <button class="btn btn-primary mt-2" id="applyFiltersBtn">Apply Filters</button>
         </div>
     </div>
 
     <div class="logs-container" id="logsContainer">
         <!-- Logs will be displayed here -->
     </div>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <p>Page <span id="currentPage">1</span> of <span id="totalPages">1</span></p>
+        </div>
+        <div class="col-md-6 text-right">
+            <button class="btn btn-secondary" id="prevPageBtn">Previous Page</button>
+            <button class="btn btn-secondary ml-2" id="nextPageBtn">Next Page</button>
+        </div>
+    </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/flatpickr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.9/dist/plugins/rangePlugin.min.js"></script>
 <script src="/static/js/index.js"></script>
 </body>
 </html>
