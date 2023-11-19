@@ -3,9 +3,6 @@
 
 
 
-
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -204,6 +201,8 @@ This require you to install postgress database and set your db name, username, p
     - To run use this commnd : ``python generate_dummy_logs.py ``
 - dummy_logs.log is sample log file 
 - you can use populate_logs_from_log_file if you have a log file
+
+[![Your Video](https://img.youtube.com/vi/LRjsj0x0rN0/0.jpg)](https://www.youtube.com/watch?v=LRjsj0x0rN0)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
