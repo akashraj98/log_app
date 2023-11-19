@@ -39,8 +39,7 @@ class LogSearchApiView(View):
         # Convert timestamp strings to datetime objects if provided
         start_datetime = datetime.strptime(start_timestamp_filter, '%Y-%m-%d %I:%M%p') if start_timestamp_filter else None
         end_datetime = datetime.strptime(end_timestamp_filter, '%Y-%m-%d %I:%M%p') if end_timestamp_filter else None
-        print(start_datetime)
-        print(end_datetime)
+
 
         # Build filter conditions
         filter_conditions = Q()
