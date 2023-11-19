@@ -11,10 +11,12 @@ from django.utils import timezone
 
 #We want to run thread in an infinite loop
 running=True
-conf = {'bootstrap.servers': "localhost:9092",
-        'auto.offset.reset': 'smallest',
+conf = {'bootstrap.servers': 'localhost:9092',
+        'auto.offset.reset': 'earliest',
+        'enable.auto.commit': True,
+        'auto.commit.interval.ms': 1000,
         'group.id': "logs_group",
-        # 'enable.auto.commit': True,
+        
 }
 #Topic 
 #improvement make this as configuration variable
@@ -26,6 +28,8 @@ class LogsCreatedListener(threading.Thread):
         threading.Thread.__init__(self)
         # Create consumer
         self.consumer = Consumer(conf)
+        self.batch_size = 10
+        self.messages_batch = []
    
         
     def run(self):
@@ -35,7 +39,7 @@ class LogsCreatedListener(threading.Thread):
             self.consumer.subscribe([topic])
             while running:
                 #Poll for message
-                msg = self.consumer.poll(timeout=1.0)
+                msg = self.consumer.poll(timeout=1000)
                 if msg is None: 
                     print("No message found")
                     continue
@@ -43,18 +47,13 @@ class LogsCreatedListener(threading.Thread):
                 if msg.error():
                     if msg.error().code() == KafkaError._PARTITION_EOF:
                         print('%% %s [%d] reached end at offset %d\n' %(msg.topic(), msg.partition(), msg.offset()))
-                    # End of partition event
-                        # sys.stderr.write('%% %s [%d] reached end at offset %d\n' %
-                        #              (msg.topic(), msg.partition(), msg.offset()))
-                elif msg.error():
-                    print("error")
+                        self.insert_batch()
                     raise KafkaException(msg.error())
                 else:
                     #Handle Message
                     print('---------> Got message creating log.....')
                     log_data = json.loads(msg.value().decode('utf-8'))
-                    #In Real world, write email sending logic here
-                    log_entry = LogData.objects.create(
+                    log_entry = LogData(
                         level=log_data["level"],
                         message=log_data["message"],
                         resourceId=log_data["resourceId"],
@@ -64,10 +63,20 @@ class LogsCreatedListener(threading.Thread):
                         commit=log_data["commit"],
                         parentResourceId=log_data["metadata"].get("parentResourceId")
                     )
-                    log_entry.save()
-                    print(log_data)
+                    self.messages_batch.append(log_entry)
+                    # Insert in batches
+                    if len(self.messages_batch) >= self.batch_size:
+                        self.insert_batch()
         finally:
         # Close down consumer to commit final offsets.
+            self.insert_batch()
             self.consumer.close()
     
+    def insert_batch(self):
+        if self.messages_batch:
+            LogData.objects.bulk_create(self.messages_batch)
+            self.messages_batch = []
+            print("Batch inserted successfully.")
+
+        
    
