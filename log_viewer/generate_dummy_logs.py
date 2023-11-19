@@ -1,10 +1,11 @@
 import csv
 from datetime import datetime, timedelta
+import requests
 import random
 import string
 import json
 
-def generate_dummy_logs(num_logs=100):
+def generate_dummy_logs(num_logs=1000):
     log_data = []
 
     subjects = ["The system", "A process", "The application", "The server"]
@@ -25,6 +26,7 @@ def generate_dummy_logs(num_logs=100):
                 "parentResourceId": "server-" + ''.join(random.choices(string.digits, k=4)) 
             }
         }
+        send_log(log_entry)
         log_data.append(log_entry)
 
     return log_data
@@ -46,7 +48,18 @@ def write_logs_to_logs_file(log_data, logs_file_path='dummy_logs.log'):
             file.write(json.dumps(log_entry))
             file.write('\n')
 
+def send_log(log_entry):
+    url = 'http://localhost:3000/ingest-logs/'  # Replace with the actual URL of your log server
+    headers = {'Content-Type': 'application/json'}
+
+    try:
+        response = requests.post(url, data=json.dumps(log_entry), headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        print(f"Log sent successfully. Response: {response.text} Log.spanId: {log_entry['spanId']}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error sending log: {e}")
+
 if __name__ == "__main__":
     num_logs_to_generate = 10000
     logs_data = generate_dummy_logs(num_logs_to_generate)
-    write_logs_to_logs_file(logs_data)
+    # write_logs_to_logs_file(logs_data)
