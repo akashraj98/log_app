@@ -4,8 +4,6 @@ import requests
 import random
 import string
 import json
-import logging
-logger = logging.getLogger(__name__)
 
 def generate_dummy_logs(num_logs=1000):
     log_data = []
@@ -57,9 +55,9 @@ def send_log(log_entry):
     try:
         response = requests.post(url, data=json.dumps(log_entry), headers=headers)
         response.raise_for_status()  # Raise an exception for HTTP errors
-        logger.info(f"Log sent successfully. Response: {response.text} Log.spanId: {log_entry['traceId']}")
+        print(f"Log sent successfully. Response: {response.text} Log.traceId: {log_entry['traceId']}")
     except requests.exceptions.RequestException as e:
-        logger.error(f"Error sending log: {e}")
+        print(f"Error sending log: {e}")
 
 if __name__ == "__main__":
     num_logs_to_generate = 10000

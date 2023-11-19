@@ -79,7 +79,7 @@ class LogsCreatedListener(threading.Thread):
             LogData.objects.bulk_create(self.messages_batch)
             self.messages_batch = []
             self.consumer.commit(asynchronous=False)
-            print("Batch inserted successfully.")
+            print("logs inserted successfully.")
 
         
    

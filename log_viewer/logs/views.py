@@ -24,7 +24,7 @@ class LogsView(View):
 class LogSearchApiView(View):
     def get(self, request):
         # Get query parameters
-        search_query = request.GET.get('q', '')
+        search_query = request.GET.get('q', '').strip()
         level_filter = request.GET.get('level', '')
         message_filter = request.GET.get('message', '')
         resourceId_filter = request.GET.get('resourceId', '')
@@ -103,10 +103,9 @@ class LogIngestionView(View):
             level = data.get('level', 'info')
             # Process the log entry (you can replace this with your own processing logic)
             self.process_log(level, data)
-
-            return JsonResponse({'status': 'success'})
+            return JsonResponse({'status': 'success','message': 'Log entry processed successfully'})
         except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)})
+            return JsonResponse({'status': 'error', 'message': str(e)},status=500)
 
     def process_log(self, level, data):
         # Your processing logic for an individual log entry
