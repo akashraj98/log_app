@@ -18,7 +18,7 @@
   </p>
 </div>
 
-
+<img src="images/screenshot.png" alt="Logo" width="500" height="500">
 
 <!-- TABLE OF CONTENTS -->
 <details>
