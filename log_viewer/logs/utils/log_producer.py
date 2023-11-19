@@ -1,6 +1,10 @@
 import json
+import logging
 from confluent_kafka import Producer
 import socket
+
+logger = logging.getLogger(__name__)
+
 topic='app_logs'
 class ProducerLogCreated:
     def __init__(self) -> None:        
@@ -9,6 +13,6 @@ class ProducerLogCreated:
 
     # This method will be called inside view for sending Kafka message
     def publish(self,method, body):
-        print('Inside UserService: Sending to Kafka: ')
-        print(body)
+        logger.info('Inside UserService: Sending to Kafka: ')
+        logger.info(body)
         self.producer.produce(topic, key="key.logs.created", value=json.dumps(body))

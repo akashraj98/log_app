@@ -13,8 +13,7 @@ from django.utils import timezone
 running=True
 conf = {'bootstrap.servers': 'localhost:9092',
         'auto.offset.reset': 'earliest',
-        'enable.auto.commit': True,
-        'auto.commit.interval.ms': 1000,
+        'enable.auto.commit': False,
         'group.id': "logs_group",
         
 }
@@ -28,7 +27,7 @@ class LogsCreatedListener(threading.Thread):
         threading.Thread.__init__(self)
         # Create consumer
         self.consumer = Consumer(conf)
-        self.batch_size = 10
+        self.batch_size = 100 # increase batch size to 100 if request volume is high
         self.messages_batch = []
    
         
@@ -39,15 +38,18 @@ class LogsCreatedListener(threading.Thread):
             self.consumer.subscribe([topic])
             while running:
                 #Poll for message
-                msg = self.consumer.poll(timeout=1000)
+                msg = self.consumer.poll(timeout=1.0)
                 if msg is None: 
                     print("No message found")
+                    # if there is anything in batch
+                    self.insert_batch()
                     continue
                 #Handle Error
                 if msg.error():
                     if msg.error().code() == KafkaError._PARTITION_EOF:
                         print('%% %s [%d] reached end at offset %d\n' %(msg.topic(), msg.partition(), msg.offset()))
                         self.insert_batch()
+                    print("error %s" % msg.error())
                     raise KafkaException(msg.error())
                 else:
                     #Handle Message
@@ -76,6 +78,7 @@ class LogsCreatedListener(threading.Thread):
         if self.messages_batch:
             LogData.objects.bulk_create(self.messages_batch)
             self.messages_batch = []
+            self.consumer.commit(asynchronous=False)
             print("Batch inserted successfully.")
 
         
