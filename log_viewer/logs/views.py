@@ -5,6 +5,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from .utils.log_producer import ProducerLogCreated
+from haystack.query import SearchQuerySet
 
 
 from django.http import JsonResponse
@@ -43,6 +44,7 @@ class LogSearchApiView(View):
 
         # Build filter conditions
         filter_conditions = Q()
+        # logs = SearchQuerySet().models(LogData).filter(content__icontains=search_query)
         if search_query:
             filter_conditions |= Q(message__icontains=search_query) |\
                                 Q(resourceId__icontains=search_query) | Q(traceId__icontains=search_query) | \

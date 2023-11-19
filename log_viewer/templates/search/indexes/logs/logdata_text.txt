@@ -1,0 +1,8 @@
+{{ object.level }}
+{{ object.message }}
+{{ object.resourceId }}
+{{ object.timestamp }}
+{{ object.traceId }}
+{{ object.spanId }}
+{{ object.commit }}
+{{ object.parentResourceId }}
