@@ -55,7 +55,7 @@ def send_log(log_entry):
     try:
         response = requests.post(url, data=json.dumps(log_entry), headers=headers)
         response.raise_for_status()  # Raise an exception for HTTP errors
-        print(f"Log sent successfully. Response: {response.text} Log.spanId: {log_entry['spanId']}")
+        print(f"Log sent successfully. Response: {response.text} Log.spanId: {log_entry['traceId']}")
     except requests.exceptions.RequestException as e:
         print(f"Error sending log: {e}")
 

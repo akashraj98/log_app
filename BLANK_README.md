@@ -249,3 +249,5 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 Prerequisite
 there have to be app_logs folder inside log_viewer project directory to store app logs
+
+#increase batch size if request volume is high
