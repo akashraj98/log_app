@@ -18,10 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth.decorators import login_required
 
-from logs.views import LogsView, LogSearchApiView
+from logs.views import LogsView, LogSearchApiView,LogIngestionView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", LogsView.as_view(), name=("logs_view")),
     path("logs/", LogSearchApiView.as_view(), name=("logs_view")),
+    path("ingest-logs/", LogIngestionView.as_view(), name=("ingresslogs_view")),
 ]

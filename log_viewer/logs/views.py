@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.views import View
 from datetime import datetime
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from .utils.log_producer import ProducerLogCreated
 
 
 from django.http import JsonResponse
@@ -10,6 +14,7 @@ import logging
 from logs.models import LogData
 # Create your views here.
 logger = logging.getLogger(__name__)
+producerLogCreated=ProducerLogCreated()
 
 class LogsView(View):
     def get(self, request):
@@ -90,3 +95,21 @@ class LogSearchApiView(View):
         } for log in current_page]
 
         return JsonResponse({'logs': serialized_logs, 'total_pages': paginator.num_pages, 'current_page': current_page.number})
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class LogIngestionView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+            level = data.get('level', 'info')
+            # Process the log entry (you can replace this with your own processing logic)
+            self.process_log(level, data)
+
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)})
+
+    def process_log(self, level, data):
+        # Your processing logic for an individual log entry
+        producerLogCreated.publish('log_created', data)
+        logger.info(f"Processing log entry - Level: {level}, Message: {data}")
